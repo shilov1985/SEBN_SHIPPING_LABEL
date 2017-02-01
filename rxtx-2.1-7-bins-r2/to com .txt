@@ -1,0 +1,76 @@
+package Lesson;
+
+import gnu.io.CommPortIdentifier;
+import gnu.io.PortInUseException;
+import gnu.io.SerialPort;
+import gnu.io.UnsupportedCommOperationException;
+
+import java.io.*;
+import java.util.*;
+
+public class Less1 {
+	static  StringBuilder label;
+	static File etiket = new File("D:\\etiket.ET2");
+	static Scanner scan ;
+    static Enumeration portList;
+    static CommPortIdentifier portId;
+    static String messageString = "Hello, world!\n";
+    static SerialPort serialPort;
+    static OutputStream outputStream;
+
+    public static void main(String[] args) {
+    	
+    	try {
+			scan = new Scanner(etiket);
+		} catch (FileNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		
+	 label = new StringBuilder();
+		
+		 while(scan.hasNextLine()){
+			 label.append(scan.nextLine());
+		 }
+		 
+		 String label2 = label.toString();
+		 
+		 
+		 
+		 
+        portList = CommPortIdentifier.getPortIdentifiers();
+
+        while (portList.hasMoreElements()) {
+            portId = (CommPortIdentifier) portList.nextElement();
+            if (portId.getPortType() == CommPortIdentifier.PORT_SERIAL) {
+                 if (portId.getName().equals("COM4")) {
+                //if (portId.getName().equals("/dev/term/a")) {
+                	
+                    try {
+                        serialPort = (SerialPort)
+                        
+                       
+                            portId.open("SimpleWriteApp", 2000);
+                    } catch (PortInUseException e) {}
+                    try {
+                        outputStream = serialPort.getOutputStream();
+                    } catch (IOException e) {}
+                    try {
+                        serialPort.setSerialPortParams(9600,
+                            SerialPort.DATABITS_8,
+                            SerialPort.STOPBITS_1,
+                            SerialPort.PARITY_NONE);
+                    } catch (UnsupportedCommOperationException e) {}
+                    try {
+                        outputStream.write(label2.getBytes());
+                    } catch (IOException e) {}
+                    System.out.println(serialPort);    
+                    System.out.println(label2); 
+                }
+              
+                 
+            }
+        }
+    }
+}
