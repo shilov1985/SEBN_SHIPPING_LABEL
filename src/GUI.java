@@ -24,27 +24,29 @@ public class GUI extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	String ru4noDopalvane;
-	int endIndex1;
-	int endIndex2;
+	int firstSampleEndIndex;
+	int secondSampleEndIndex;
 	static String dopalniSample;
 	static String getMatchCode;
-	String sample1;
-	String sample2;
+	String firstSample;
+	String secondSample;
 	int dopalniBroi;
 	boolean dobavqneNaPaketaj;
 
 	int scanTime;
 
-	int counterBroi, broiZaCorrect;
+	int harnessCounter;
 	// promenlivi za vastanovqvane ot sebe si
-	int Actual;
-	String ActualLength;
+	int OK_StatFIleByMonthLength;
+	
 	Scanner scan, scanStat;
-	BufferedReader reader, readerStat;
-	FileReader read, readStat;
+	BufferedReader reader;
+	static BufferedReader readerStat;
+	FileReader read;
 	// Deklaracia na promenliva za path kum Statistikata
+	static FileReader readStat;
 
-	static String iniPath, USER;
+	static String pathToStatistic, USER_NUMBER;
 
 	public static boolean print;
 
@@ -60,11 +62,12 @@ public class GUI extends JFrame {
 
 	StringBuilder etiketKraen;
 
-	JTextField field, fieldWK, fieldPack, fieldUser;
+	static JTextField taileNumberField;
+	JTextField piecesField, packField, userField;
 
 	StringBuilder arrIni = null;
 
-	StringBuilder arrPaketaj = null;
+	StringBuilder packDataFileArray = null;
 
 	File fileIni;
 
@@ -139,11 +142,11 @@ public class GUI extends JFrame {
 
 		arrIni = new StringBuilder();
 
-		arrPaketaj = new StringBuilder();
+		packDataFileArray = new StringBuilder();
 
 		fileIni = new File("C:\\SEBN_SHIPPING_LABEL\\Settings.ini");
 
-		paketajFile = new File("C:\\SEBN_SHIPPING_LABEL\\Paketaj.txt");
+		paketajFile = new File("C:\\SEBN_SHIPPING_LABEL\\PACK_DATA.txt");
 
 		try {
 			scanIni = new Scanner(fileIni);
@@ -167,7 +170,7 @@ public class GUI extends JFrame {
 
 		while (scanPaketaj.hasNextLine()) {
 			daljinaPaketaj++;
-			arrPaketaj.append(scanPaketaj.nextLine().trim());
+			packDataFileArray.append(scanPaketaj.nextLine().trim());
 		}
 		scanPaketaj.close();
 		// ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -177,7 +180,7 @@ public class GUI extends JFrame {
 
 		int endLength3 = arrIni.indexOf(">01");
 
-		iniPath = arrIni.substring(startLength3 + 3, endLength3).trim();
+		pathToStatistic = arrIni.substring(startLength3 + 3, endLength3).trim();
 
 		// ////////////////////////////////////////////////////////////////////////////////////////////////
 		// Izvli4ane na COM port nomer
@@ -277,25 +280,25 @@ public class GUI extends JFrame {
 
 		// //////////////////////////////////////////////////////////////////
 
-		field = new JTextField();
+		taileNumberField = new JTextField();
 
-		field.setFont(new Font("SansSerif", Font.BOLD, 10));
+		taileNumberField.setFont(new Font("SansSerif", Font.BOLD, 10));
 
-		frame.add(field);
+		frame.add(taileNumberField);
 
-		field.setBounds(0, 0, 155, 18);
+		taileNumberField.setBounds(0, 0, 155, 18);
 
-		field.setEditable(false);
+		taileNumberField.setEditable(false);
 
-		fieldWK = new JTextField();
+		piecesField = new JTextField();
 
-		fieldWK.setFont(new Font("SansSerif", Font.CENTER_BASELINE, 10));
+		piecesField.setFont(new Font("SansSerif", Font.CENTER_BASELINE, 10));
 
-		frame.add(fieldWK);
+		frame.add(piecesField);
 
-		fieldWK.setBounds(200, 0, 35, 18);
+		piecesField.setBounds(200, 0, 35, 18);
 
-		fieldWK.setEditable(false);
+		piecesField.setEditable(false);
 
 		reset = new JButton("1/2 œ¿ ≈“¿∆");
 
@@ -321,30 +324,30 @@ public class GUI extends JFrame {
 
 		broiki.setBounds(156, 0, 60, 20);
 
-		fieldPack = new JTextField();
+		packField = new JTextField();
 
-		fieldPack.setEditable(false);
+		packField.setEditable(false);
 
-		frame.add(fieldPack);
+		frame.add(packField);
 
-		fieldPack.setBounds(235, 0, 80, 18);
+		packField.setBounds(235, 0, 80, 18);
 
-		fieldPack.setBackground(Color.cyan);
+		packField.setBackground(Color.cyan);
 
-		fieldPack.setFont(new Font("SansSerif", Font.BOLD, 11));
+		packField.setFont(new Font("SansSerif", Font.BOLD, 11));
 
 		// Pole koeto vizualizira user nomer
-		fieldUser = new JTextField();
+		userField = new JTextField();
 
-		fieldUser.setEditable(false);
+		userField.setEditable(false);
 
-		frame.add(fieldUser);
+		frame.add(userField);
 
-		fieldUser.setBounds(315, 0, 75, 18);
+		userField.setBounds(315, 0, 75, 18);
 
-		fieldUser.setBackground(Color.green);
+		userField.setBackground(Color.green);
 
-		fieldUser.setFont(new Font("SansSerif", Font.BOLD, 10));
+		userField.setFont(new Font("SansSerif", Font.BOLD, 10));
 
 		// Pole za vuvejdane na polovin paketaj
 		fieldDoplni = new JTextField();
